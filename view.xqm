@@ -53,3 +53,57 @@ function xtfview:doctype( $path as xs:string ) {
           return "html"
       default return  name($node)
 };
+
+declare %rest:path( '/search' )
+        %rest:GET
+        %rest:query-param( "title", "{$title}" )
+        %rest:query-param( "subject", "{$subject}")
+        %output:method('html')       
+function xtfview:search( $title as xs:string? , $subject as xs:string? ) {
+<html xmlns='http://www.w3.org/1999/xhtml'>
+<head></head>
+<body>
+<div id="search_form">
+<form method="get" action="/search">
+  <div>
+    <dt>Title:</dt>
+    <dd><input type="text" name="title" label="title" value="{$title}" /></dd>
+    <dt>Subject:</dt>
+    <dd><input type="text" name="subject" label="subject" value="{$subject}"/></dd>
+    <input type="submit" value="Search" />
+  </div>
+</form>
+</div>
+<div id="search_results">
+ <h4>
+ { if ($title) then concat( 'TITLE:', $title), '; ' }
+ { if ($subject) then concat('SUBJECT:', $subject), ';' }
+ { request:parameter-names() }
+ </h4>
+ { for $doc in xtfview:findByTitle( collection('published'), $title ) =>
+ xtfview:findBySubj( $subject ) 
+
+    return <p>{ $doc//*:titleproper/normalize-space() }</p> }
+</div>
+</body>     
+</html>        
+};
+
+(: DEVELOPMENT: reload and parse restxq modules :)
+declare %rest:path( 'WTF')
+        %rest:GET
+function xtfview:reset(){
+  (rest:init(),rest:wadl())
+};  
+
+
+
+declare function xtfview:findBySubj( $ctx, $subj as xs:string )  {
+  if ( $subj )  then $ctx/*[ //*:subject contains text { ft:tokenize($subj) } all ]
+  else $ctx 
+};   
+
+declare function xtfview:findByTitle( $ctx as node()*, $title as xs:string )  {
+  if ( $title ) then $ctx/*[ //*:titlestmt contains text { ft:tokenize($title) } all ]
+  else $ctx
+};  
