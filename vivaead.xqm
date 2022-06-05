@@ -1,5 +1,5 @@
 
-module namespace xtfview = 'http://localhost/view';
+module namespace vivaead = 'http://localhost/view';
 
 
 (:~  Parses a XTF-like view URL i.e. a single docId param with additional params separated by ";" : ?docId=document-path;chunk.id=c2;toc.id=t2 :)
@@ -8,9 +8,9 @@ declare
   %rest:query-param( "docId", "{$query}", "")
 
   %rest:GET
-function xtfview:view( $query as xs:string) {
+function vivaead:view( $query as xs:string) {
    let $params := map:merge( for $p in tokenize( concat( 'docId=', $query), ';' ) return apply( map:entry#2, array{ tokenize($p, '=') }) )
-   return switch( xtfview:doctype( $params('docId') ))
+   return switch( vivaead:doctype( $params('docId') ))
     case 'TEIP4'
    return xslt:transform( xslt:transform( doc($params('docId')), "/projects/SIB/add_id_bov.xsl" ),
                   "/usr/local/projects/XTF/xtf.lib/style/dynaXML/docFormatter/tei/teiDocFormatter.xsl" ,
@@ -27,7 +27,7 @@ function xtfview:view( $query as xs:string) {
 
 (:~ dispatch on doctype: first try namespace and then root element :)
 declare
-function xtfview:doctype( $path as xs:string ) {
+function vivaead:doctype( $path as xs:string ) {
    let $doc := doc($path)
    let $node := $doc/*
    let $ns := namespace-uri($node)
@@ -61,7 +61,7 @@ declare %rest:path( '/search' )
         %rest:query-param( "subj_mode", "{$subj_mode}")
         %rest:query-param( "title_mode", "{$title_mode}" )
         %output:method('html')       
-function xtfview:search( $title as xs:string? , $subject as xs:string?, 
+function vivaead:search( $title as xs:string? , $subject as xs:string?, 
  $subj_mode as xs:string?, $title_mode as xs:string? ) {
 <html xmlns='http://www.w3.org/1999/xhtml'>
 <head></head>
@@ -71,10 +71,10 @@ function xtfview:search( $title as xs:string? , $subject as xs:string?,
   <div>
     <dt>Title:</dt>
     <dd><input type="text" name="title" label="title" value="{$title ?: '' }" />
-    { xtfview:HTMLselect( 'title_mode', ('all', 'any')) }</dd>
+    { vivaead:HTMLselect( 'title_mode', ('all', 'any')) }</dd>
     <dt>Subject:</dt>
     <dd><input type="text" name="subject" label="subject" value="{$subject ?: ''}"/>
-    { xtfview:HTMLselect( 'subj_mode', ('all', 'any')) }</dd>
+    { vivaead:HTMLselect( 'subj_mode', ('all', 'any')) }</dd>
     <input type="submit" value="Search" />
   </div>
 </form>
@@ -86,11 +86,11 @@ function xtfview:search( $title as xs:string? , $subject as xs:string?,
  { request:parameter-names() }
  </h4>
  <ul>
- { for $doc in xtfview:findByTitle( collection('published'), $title, 
+ { for $doc in vivaead:findByTitle( collection('published'), $title, 
    map{ 'mode' : $title_mode ?: "all" } )
-  =>  xtfview:findBySubj( $subject, map{ 'mode' : $subj_mode ?: "all" } ) 
+  =>  vivaead:findBySubj( $subject, map{ 'mode' : $subj_mode ?: "all" } ) 
 
-    return <li> { xtfview:linkto( $doc ) } </li> }
+    return <li> { vivaead:linkto( $doc ) } </li> }
     
     </ul>
 </div>
@@ -101,25 +101,25 @@ function xtfview:search( $title as xs:string? , $subject as xs:string?,
 (: DEVELOPMENT: reload and parse restxq modules :)
 declare %rest:path( 'WTF')
         %rest:GET
-function xtfview:reset(){
+function vivaead:reset(){
   (rest:init(),rest:wadl())
 };  
 
 
 
-declare function xtfview:findBySubj( $ctx, $subj as xs:string?, $opt  )  {
+declare function vivaead:findBySubj( $ctx, $subj as xs:string?, $opt  )  {
   if ( $subj )  then $ctx/*[ft:contains( .//*:subject, ft:tokenize($subj), $opt )]
   else $ctx 
 };   
 
-declare function xtfview:findByTitle( $ctx as node()*, $title as xs:string?, $opt )  {
+declare function vivaead:findByTitle( $ctx as node()*, $title as xs:string?, $opt )  {
   if ( $title ) 
   then
   $ctx/*[ft:contains( .//*:titlestmt, ft:tokenize($title), $opt)]
   else $ctx
 };  
 
-declare function xtfview:linkto( $doc  ) { 
+declare function vivaead:linkto( $doc  ) { 
 
    <a href="{ request:context-path() || '/view?docId=' || fn:base-uri($doc)}" >
     {  root($doc)//*:ead/*:eadheader//*:titlestmt/normalize-space()  }
@@ -127,7 +127,7 @@ declare function xtfview:linkto( $doc  ) {
 
 };
 
-declare function xtfview:HTMLselect( $name, $values ) { 
+declare function vivaead:HTMLselect( $name, $values ) { 
   <select name="{$name}">
      { for $v in $values return <option value="{$v}"  >{$v}</option> }
   </select>
