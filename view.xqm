@@ -62,7 +62,7 @@ declare %rest:path( '/search' )
         %rest:query-param( "title_mode", "{$title_mode}" )
         %output:method('html')       
 function xtfview:search( $title as xs:string? , $subject as xs:string?, 
- $subj_mode as xs:string, $title_mode as xs:string ) {
+ $subj_mode as xs:string?, $title_mode as xs:string? ) {
 <html xmlns='http://www.w3.org/1999/xhtml'>
 <head></head>
 <body>
@@ -70,10 +70,10 @@ function xtfview:search( $title as xs:string? , $subject as xs:string?,
 <form method="get" action="/search">
   <div>
     <dt>Title:</dt>
-    <dd><input type="text" name="title" label="title" value="{$title}" />
+    <dd><input type="text" name="title" label="title" value="{$title ?: '' }" />
     { xtfview:HTMLselect( 'title_mode', ('all', 'any')) }</dd>
     <dt>Subject:</dt>
-    <dd><input type="text" name="subject" label="subject" value="{$subject}"/>
+    <dd><input type="text" name="subject" label="subject" value="{$subject ?: ''}"/>
     { xtfview:HTMLselect( 'subj_mode', ('all', 'any')) }</dd>
     <input type="submit" value="Search" />
   </div>
@@ -87,8 +87,8 @@ function xtfview:search( $title as xs:string? , $subject as xs:string?,
  </h4>
  <ul>
  { for $doc in xtfview:findByTitle( collection('published'), $title, 
-   map{ 'mode' : $subj_mode } )
-  =>  xtfview:findBySubj( $subject, map{ 'mode' : $subj_mode } ) 
+   map{ 'mode' : $title_mode ?: "all" } )
+  =>  xtfview:findBySubj( $subject, map{ 'mode' : $subj_mode ?: "all" } ) 
 
     return <li> { xtfview:linkto( $doc ) } </li> }
     
@@ -107,12 +107,12 @@ function xtfview:reset(){
 
 
 
-declare function xtfview:findBySubj( $ctx, $subj as xs:string, $opt  )  {
+declare function xtfview:findBySubj( $ctx, $subj as xs:string?, $opt  )  {
   if ( $subj )  then $ctx/*[ft:contains( .//*:subject, ft:tokenize($subj), $opt )]
   else $ctx 
 };   
 
-declare function xtfview:findByTitle( $ctx as node()*, $title as xs:string, $opt )  {
+declare function xtfview:findByTitle( $ctx as node()*, $title as xs:string?, $opt )  {
   if ( $title ) 
   then
   $ctx/*[ft:contains( .//*:titlestmt, ft:tokenize($title), $opt)]
@@ -129,6 +129,6 @@ declare function xtfview:linkto( $doc  ) {
 
 declare function xtfview:HTMLselect( $name, $values ) { 
   <select name="{$name}">
-     { for $v in $values return <option>{$v}</option> }
+     { for $v in $values return <option value="{$v}"  >{$v}</option> }
   </select>
 };
