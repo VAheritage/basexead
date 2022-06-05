@@ -46,12 +46,6 @@ function eadsearch:search( $title as xs:string? , $subject as xs:string?,
 </html>        
 };
 
-(: DEVELOPMENT: reload and parse restxq modules :)
-declare %rest:path( 'WTF')
-        %rest:GET
-function eadsearch:reset(){
-  (rest:init(),rest:wadl())
-};  
 
 
 
