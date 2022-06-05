@@ -1,5 +1,8 @@
 module namespace xtfview = 'http://localhost/xtfview';
 
+(: NOTE: Only stylesheet locations for EAD2002 have been updated in this module
+   Others would need to be updated to display other document types. 
+ :)
 
 (:~  Parses a XTF-like view URL i.e. a single docId param with additional params separated by ";" : ?docId=document-path;chunk.id=c2;toc.id=t2 :)
 declare
@@ -19,7 +22,7 @@ function xtfview:view( $query as xs:string) {
       (: return xslt:transform( doc($params('docId')),  "/projects/TEI/tei2html/tei2html.xsl" ) :)
     case 'EAD2002'
       return xslt:transform( util:strip-namespaces(doc($params('docId'))),
-                "/usr/local/projects/XTF/vivaxtf/style/dynaXML/docFormatter/VIVAead/eadDocFormatter.xsl" ,
+                "https://ead.lib.virginia.edu/vivaxtf/style/dynaXML/docFormatter/VIVAead/eadDocFormatter.xsl" ,
                 $params )
     default return doc($params('docId'))
 };
