@@ -58,8 +58,11 @@ declare %rest:path( '/search' )
         %rest:GET
         %rest:query-param( "title", "{$title}" )
         %rest:query-param( "subject", "{$subject}")
+        %rest:query-param( "subj_mode", "{$subj_mode}")
+        %rest:query-param( "title_mode", "{$title_mode}" )
         %output:method('html')       
-function xtfview:search( $title as xs:string? , $subject as xs:string? ) {
+function xtfview:search( $title as xs:string? , $subject as xs:string?, 
+ $subj_mode as xs:string, $title_mode as xs:string ) {
 <html xmlns='http://www.w3.org/1999/xhtml'>
 <head></head>
 <body>
@@ -67,9 +70,11 @@ function xtfview:search( $title as xs:string? , $subject as xs:string? ) {
 <form method="get" action="/search">
   <div>
     <dt>Title:</dt>
-    <dd><input type="text" name="title" label="title" value="{$title}" /></dd>
+    <dd><input type="text" name="title" label="title" value="{$title}" />
+    { xtfview:HTMLselect( 'title_mode', ('all', 'any')) }</dd>
     <dt>Subject:</dt>
-    <dd><input type="text" name="subject" label="subject" value="{$subject}"/></dd>
+    <dd><input type="text" name="subject" label="subject" value="{$subject}"/>
+    { xtfview:HTMLselect( 'subj_mode', ('all', 'any')) }</dd>
     <input type="submit" value="Search" />
   </div>
 </form>
@@ -81,8 +86,9 @@ function xtfview:search( $title as xs:string? , $subject as xs:string? ) {
  { request:parameter-names() }
  </h4>
  <ul>
- { for $doc in xtfview:findByTitle( collection('published'), $title, map{ 'mode' : 'all'} )
-  =>  xtfview:findBySubj( $subject, map{ 'mode' : 'all'} ) 
+ { for $doc in xtfview:findByTitle( collection('published'), $title, 
+   map{ 'mode' : $subj_mode } )
+  =>  xtfview:findBySubj( $subject, map{ 'mode' : $subj_mode } ) 
 
     return <li> { xtfview:linkto( $doc ) } </li> }
     
@@ -119,4 +125,10 @@ declare function xtfview:linkto( $doc  ) {
     {  root($doc)//*:ead/*:eadheader//*:titlestmt/normalize-space()  }
    </a>
 
+};
+
+declare function xtfview:HTMLselect( $name, $values ) { 
+  <select name="{$name}">
+     { for $v in $values return <option>{$v}</option> }
+  </select>
 };
