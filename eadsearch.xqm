@@ -1,5 +1,8 @@
-
 module namespace eadsearch = 'http://localhost/eadsearch';
+
+(: TODO: add search by persname, unittitles, IDs ( top unitid and /titlestmt//num, vi# ),  
+	any text &	publisher select & facets, ( other facets if possible? )
+:)
 
 
 declare %rest:path( '/search' )
@@ -63,9 +66,10 @@ declare function eadsearch:findByTitle( $ctx as node()*, $title as xs:string?, $
 
 declare function eadsearch:linkto( $doc  ) { 
 
+	<span>{ root($doc)//*:ead/*:eadheader/*:eadid/@mainagencycode/string() }: 
    <a href="{ request:context-path() || '/view?docId=' || fn:base-uri($doc)}" >
     {  root($doc)//*:ead/*:eadheader//*:titlestmt/normalize-space()  }
-   </a>
+   </a></span>
 
 };
 
