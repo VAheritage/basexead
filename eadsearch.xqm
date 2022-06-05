@@ -1,5 +1,7 @@
 module namespace eadsearch = 'http://localhost/eadsearch';
 
+declare default element namespace "urn:isbn:1-931666-22-9" ; (: EAD2002 :)
+
 (: TODO: add search by persname, unittitles, IDs ( top unitid and /titlestmt//num, vi# ),  
 	any text &	publisher select & facets, ( other facets if possible? )
 :)
@@ -53,22 +55,22 @@ function eadsearch:search( $title as xs:string? , $subject as xs:string?,
 
 
 declare function eadsearch:findBySubj( $ctx, $subj as xs:string?, $opt  )  {
-  if ( $subj )  then $ctx/*[ft:contains( .//*:subject, ft:tokenize($subj), $opt )]
+  if ( $subj )  then $ctx/*[ft:contains( .//subject, ft:tokenize($subj), $opt )]
   else $ctx 
 };   
 
 declare function eadsearch:findByTitle( $ctx as node()*, $title as xs:string?, $opt )  {
   if ( $title ) 
   then
-  $ctx/*[ft:contains( .//*:titlestmt, ft:tokenize($title), $opt)]
+  $ctx/*[ft:contains( .//titlestmt, ft:tokenize($title), $opt)]
   else $ctx
 };  
 
 declare function eadsearch:linkto( $doc  ) { 
 
-	<span>{ root($doc)//*:ead/*:eadheader/*:eadid/@mainagencycode/string() }: 
+	<span>{ root($doc)//ead/eadheader/eadid/@mainagencycode/string() }: 
    <a href="{ request:context-path() || '/view?docId=' || fn:base-uri($doc)}" >
-    {  root($doc)//*:ead/*:eadheader//*:titlestmt/normalize-space()  }
+    {  root($doc)//ead/eadheader//titlestmt/normalize-space()  }
    </a></span>
 
 };
