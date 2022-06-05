@@ -80,10 +80,13 @@ function xtfview:search( $title as xs:string? , $subject as xs:string? ) {
  { if ($subject) then concat('SUBJECT:', $subject), ';' }
  { request:parameter-names() }
  </h4>
+ <ul>
  { for $doc in xtfview:findByTitle( collection('published'), $title, map{ 'mode' : 'all'} )
   =>  xtfview:findBySubj( $subject, map{ 'mode' : 'all'} ) 
 
-    return <p>{ $doc//*:titleproper/normalize-space() }</p> }
+    return <li> { xtfview:linkto( $doc ) } </li> }
+    
+    </ul>
 </div>
 </body>     
 </html>        
@@ -104,6 +107,16 @@ declare function xtfview:findBySubj( $ctx, $subj as xs:string, $opt  )  {
 };   
 
 declare function xtfview:findByTitle( $ctx as node()*, $title as xs:string, $opt )  {
-  if ( $title ) then $ctx/*[ft:contains( .//*:titlestmt, ft:tokenize($title), $opt)]
+  if ( $title ) 
+  then
+  $ctx/*[ft:contains( .//*:titlestmt, ft:tokenize($title), $opt)]
   else $ctx
 };  
+
+declare function xtfview:linkto( $doc  ) { 
+
+   <a href="{ request:context-path() || '/view?docId=' || fn:base-uri($doc)}" >
+    {  root($doc)//*:ead/*:eadheader//*:titlestmt/normalize-space()  }
+   </a>
+
+};
