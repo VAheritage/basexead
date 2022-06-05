@@ -80,8 +80,8 @@ function xtfview:search( $title as xs:string? , $subject as xs:string? ) {
  { if ($subject) then concat('SUBJECT:', $subject), ';' }
  { request:parameter-names() }
  </h4>
- { for $doc in xtfview:findByTitle( collection('published'), $title ) =>
- xtfview:findBySubj( $subject ) 
+ { for $doc in xtfview:findByTitle( collection('published'), $title, map{ 'mode' : 'all'} )
+  =>  xtfview:findBySubj( $subject, map{ 'mode' : 'all'} ) 
 
     return <p>{ $doc//*:titleproper/normalize-space() }</p> }
 </div>
@@ -98,12 +98,12 @@ function xtfview:reset(){
 
 
 
-declare function xtfview:findBySubj( $ctx, $subj as xs:string )  {
-  if ( $subj )  then $ctx/*[ //*:subject contains text { ft:tokenize($subj) } all ]
+declare function xtfview:findBySubj( $ctx, $subj as xs:string, $opt  )  {
+  if ( $subj )  then $ctx/*[ft:contains( .//*:subject, ft:tokenize($subj), $opt )]
   else $ctx 
 };   
 
-declare function xtfview:findByTitle( $ctx as node()*, $title as xs:string )  {
-  if ( $title ) then $ctx/*[ //*:titlestmt contains text { ft:tokenize($title) } all ]
+declare function xtfview:findByTitle( $ctx as node()*, $title as xs:string, $opt )  {
+  if ( $title ) then $ctx/*[ft:contains( .//*:titlestmt, ft:tokenize($title), $opt)]
   else $ctx
 };  
