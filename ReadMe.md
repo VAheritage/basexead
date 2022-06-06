@@ -1,5 +1,5 @@
 
-## BaseX implementation of search and display webapp for EAD xml
+## BaseX/XQuery implementation of search and display webapp for EAD xml
 ###  intended as an experimental replacement for XTF  ( in Development )
 
 
