@@ -20,7 +20,7 @@ function eadsearch:search( $title as xs:string? , $subject as xs:string?,
 <head></head>
 <body>
 <div id="search_form">
-<form method="get" action="{rest:uri()}">
+<form method="get" action="search">
   <div>
     <dt>Title:</dt>
     <dd><input type="text" name="title" label="title" value="{$title ?: '' }" />
@@ -69,7 +69,7 @@ declare function eadsearch:findByTitle( $ctx as node()*, $title as xs:string?, $
 declare function eadsearch:linkto( $doc  ) { 
 
 	<span>{ root($doc)//ead/eadheader/eadid/@mainagencycode/string() }: 
-   <a href="{ rest:base-uri() || '/view?docId=' || base-uri($doc)}" >
+   <a href="{ 'view?docId=' || base-uri($doc)}" >
     {  root($doc)//ead/eadheader//titlestmt/normalize-space()  }
    </a></span>
 
