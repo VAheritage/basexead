@@ -41,9 +41,9 @@ function eadsearch:search( $title as xs:string? , $subject as xs:string?,
  { request:parameter-names() }
  </h4>
  <ul>
- { for $doc in eadsearch:findByTitle( collection('published'), $title, 
+ { for $doc in eadsearch:findBy( collection('published'), 'titlestmt', $title,
    map{ 'mode' : $title_mode ?: "all" } )
-  =>  eadsearch:findBySubj( $subject, map{ 'mode' : $subj_mode ?: "all" } ) 
+  =>  eadsearch:findBy( 'subject', $subject, map{ 'mode' : $subj_mode ?: "all" } )
   => subsequence( if ($start) then $start else 1, if ($count) then $count else 100 )
 
     return <li> { eadsearch:linkto( $doc ) } </li> }
@@ -55,19 +55,13 @@ function eadsearch:search( $title as xs:string? , $subject as xs:string?,
 };
 
 
+declare function eadsearch:findBy( $ctx, $field as xs:string, $what as xs:string?, $opt ) {
+	if( $what ) then
+	$ctx/*[ft:contains( xquery:eval( ".//*:" || $field, map{ '' : . } ), ft:tokenize($what), $opt )]
+	else $ctx
+};
 
 
-declare function eadsearch:findBySubj( $ctx, $subj as xs:string?, $opt  )  {
-  if ( $subj )  then $ctx/*[ft:contains( .//subject, ft:tokenize($subj), $opt )]
-  else $ctx 
-};   
-
-declare function eadsearch:findByTitle( $ctx as node()*, $title as xs:string?, $opt )  {
-  if ( $title ) 
-  then
-  $ctx/*[ft:contains( .//titlestmt, ft:tokenize($title), $opt)]
-  else $ctx
-};  
 
 declare function eadsearch:linkto( $doc  ) { 
 

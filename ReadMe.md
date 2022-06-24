@@ -11,7 +11,8 @@ Final version will include stylesheets locally, and they will likely be re-writt
 
 BaseX DB are also not included within this project. 
 
-Requires Saxon 9 or later for processing XSLT 2.0 ( or later ) stylesheets. ( added to BaseX /lib )
+Requires Saxon 9 or 10 for processing XSLT 2.0 ( or later ) stylesheets. ( added to BaseX /lib )
+*( Saxon 11 FAILS with: javax.xml.transform.TransformerFactoryConfigurationError: Provider net.sf.saxon.TransformerFactoryImpl could not be instantiated: java.lang.reflect.InvocationTargetException )*
 
 
 
