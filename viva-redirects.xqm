@@ -9,8 +9,15 @@ function viva:css( $css ) {
 	web:redirect( "https://ead.lib.virginia.edu/vivaxtf/css/viva/" || $css )
 };
 
+declare %rest:path( "/script/viva/{$script}" )
+		%rest:GET
+function viva:script( $script ) {
+	web:redirect( "https://ead.lib.virginia.edu/vivaxtf/script/viva/" || $script )
+};
+
 declare %rest:path( "/vivaxtf/{$path=.+}" )
 		%rest:GET
 function viva:vivaxtf( $path ) {
 	web:redirect( "https://ead.lib.virginia.edu/vivaxtf/" || $path )
 };
+
