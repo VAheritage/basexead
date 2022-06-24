@@ -11,13 +11,16 @@ declare %rest:path( '/search' )
         %rest:GET
         %rest:query-param( "title", "{$title}" )
         %rest:query-param( "subject", "{$subject}")
+		%rest:query-param( "person", "{$person}")
         %rest:query-param( "subj_mode", "{$subj_mode}")
         %rest:query-param( "title_mode", "{$title_mode}" )
+		%rest:query-param( "pers_mode", "{$pers_mode}" )
 		%rest:query-param( "start", "{$start}")
 		%rest:query-param( "count", "{$count}")
         %output:method('html')       
-function eadsearch:search( $title as xs:string? , $subject as xs:string?, 
- $subj_mode as xs:string?, $title_mode as xs:string?, $start as xs:int?, $count as xs:int? ) {
+function eadsearch:search( $title as xs:string? , $subject as xs:string?, $person as xs:string?, 
+ $subj_mode as xs:string?, $title_mode as xs:string?, $pers_mode as xs:string?, 
+ $start as xs:int?, $count as xs:int? ) {
 <html xmlns='http://www.w3.org/1999/xhtml'>
 <head></head>
 <body>
@@ -30,6 +33,9 @@ function eadsearch:search( $title as xs:string? , $subject as xs:string?,
     <dt>Subject:</dt>
     <dd><input type="text" name="subject" label="subject" value="{$subject ?: ''}"/>
     { eadsearch:HTMLselect( 'subj_mode', ('all', 'any')) }</dd>
+	<dt>Persons:</dt>
+	<dd><input type="text" name="person" label="person"   value="{$person ?: ''}" />
+	{ eadsearch:HTMLselect( 'pers_mode', ('all', 'any')) }</dd>
     <input type="submit" value="Search" />
   </div>
 </form>
@@ -38,12 +44,14 @@ function eadsearch:search( $title as xs:string? , $subject as xs:string?,
  <h4>
  { if ($title) then concat( 'TITLE:', $title), '; ' }
  { if ($subject) then concat('SUBJECT:', $subject), ';' }
- { request:parameter-names() }
+ { if ($person) then concat('PERSON:', $person), ';' }
+ (: { request:parameter-names() } :)
  </h4>
  <ul>
  { for $doc in eadsearch:findBy( collection('published'), 'titlestmt', $title,
    map{ 'mode' : $title_mode ?: "all" } )
   =>  eadsearch:findBy( 'subject', $subject, map{ 'mode' : $subj_mode ?: "all" } )
+  =>  eadsearch:findBy( 'persname', $person, map{ 'mode' : $pers_mode ?: "all" } )
   => subsequence( if ($start) then $start else 1, if ($count) then $count else 100 )
 
     return <li> { eadsearch:linkto( $doc ) } </li> }
