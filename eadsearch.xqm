@@ -47,25 +47,29 @@ function eadsearch:search( $title as xs:string? , $subject as xs:string?, $perso
  { if ($title) then concat( 'TITLE:', $title), '; ' }
  { if ($subject) then concat('SUBJECT:', $subject), ';' }
  { if ($person) then concat('PERSON:', $person), ';' }
- (: { request:parameter-names() } :)
  </h4>
- <ul>
- { for $doc in eadsearch:findBy( collection('published'), 'titlestmt', $title,
+
+ { let $docs := eadsearch:findBy( collection('published'), 'titlestmt', $title,
    map{ 'mode' : $title_mode ?: "all" } )
   =>  eadsearch:findBy( 'subject', $subject, map{ 'mode' : $subj_mode ?: "all" } )
-  =>  eadsearch:findBy( 'persname', $person, map{ 'mode' : $pers_mode ?: "all" } )
-  => subsequence( $start, $count )
-
-    return <li> { eadsearch:linkto( $doc ) } </li> }
-    
-    </ul>
+  =>  eadsearch:findBy( 'persname', $person, map{ 'mode' : $pers_mode ?: "all" } ) 
+  return  <div><h4> { count($docs) } found. </h4> <ul>
+  {
+	  for $doc in subsequence( $docs, $start, $count )
+	    return <li> { eadsearch:linkto( $doc ) } </li> 	   
+  }
+  </ul></div>
+}
 </div>
 <div>
-{ request:query() }
+<hr/><br/>
+
 <a href="search?{ substring-before(request:query(), '&amp;start=' ) }&amp;start={ string($start + $count) }" >
 
 <input type="button"  value="Next" />
 </a>
+&#160;&#160; { request:query() } 
+<br/><hr/><br/>
 </div>
 </body>     
 </html>        
