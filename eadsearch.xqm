@@ -37,8 +37,8 @@ function eadsearch:search( $title as xs:string? , $subject as xs:string?, $perso
 	<dd><input type="text" name="person" label="person"   value="{$person ?: ''}" />
 	{ eadsearch:HTMLselect( 'pers_mode', ('all', 'any')) }</dd>
     <input type="submit" value="Search" />
-	(: <input type="hidden" name="count" value="{$count}" />
-	<input type="hidden" name="start" value="{$start}" /> :)
+	<input type="hidden" name="count" value="25" />
+	<input type="hidden" name="start" value="1" /> 
   </div>
 </form>
 </div>
