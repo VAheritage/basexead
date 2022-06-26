@@ -8,15 +8,15 @@ declare default element namespace "urn:isbn:1-931666-22-9" ; (: EAD2002 :)
 
 
 declare %rest:path( '/search' )
-        %rest:GET
+        %rest:GET %rest:POST
         %rest:query-param( "title", "{$title}" )
         %rest:query-param( "subject", "{$subject}")
 		%rest:query-param( "person", "{$person}")
         %rest:query-param( "subj_mode", "{$subj_mode}")
         %rest:query-param( "title_mode", "{$title_mode}" )
 		%rest:query-param( "pers_mode", "{$pers_mode}" )
-		%rest:query-param( "start", "{$start}")
-		%rest:query-param( "count", "{$count}")
+		%rest:query-param( "start", "{$start}", 1)
+		%rest:query-param( "count", "{$count}", 25 )
         %output:method('html')       
 function eadsearch:search( $title as xs:string? , $subject as xs:string?, $person as xs:string?, 
  $subj_mode as xs:string?, $title_mode as xs:string?, $pers_mode as xs:string?, 
@@ -37,6 +37,8 @@ function eadsearch:search( $title as xs:string? , $subject as xs:string?, $perso
 	<dd><input type="text" name="person" label="person"   value="{$person ?: ''}" />
 	{ eadsearch:HTMLselect( 'pers_mode', ('all', 'any')) }</dd>
     <input type="submit" value="Search" />
+	<input type="hidden" name="count" value="{$count ?: 25}" />
+	<input type="hidden" name="start" value="{$start ?: 1}" />
   </div>
 </form>
 </div>
@@ -52,11 +54,18 @@ function eadsearch:search( $title as xs:string? , $subject as xs:string?, $perso
    map{ 'mode' : $title_mode ?: "all" } )
   =>  eadsearch:findBy( 'subject', $subject, map{ 'mode' : $subj_mode ?: "all" } )
   =>  eadsearch:findBy( 'persname', $person, map{ 'mode' : $pers_mode ?: "all" } )
-  => subsequence( if ($start) then $start else 1, if ($count) then $count else 100 )
+  => subsequence( if ($start) then $start else 1, if ($count) then $count else 50 )
 
     return <li> { eadsearch:linkto( $doc ) } </li> }
     
     </ul>
+</div>
+<div>
+{ request:query() }
+<a href="search?{ substring-before(request:query(), '&amp;start=' ) }&amp;start={ (xs:int($start) ?: 1) + xs:int($count) }" >
+
+<input type="button"  value="Next" />
+</a>
 </div>
 </body>     
 </html>        
@@ -73,10 +82,15 @@ declare function eadsearch:findBy( $ctx, $field as xs:string, $what as xs:string
 
 declare function eadsearch:linkto( $doc  ) { 
 
-	<span>{ root($doc)//ead/eadheader/eadid/@mainagencycode/string() }: 
+	<div>
    <a href="{ 'view?docId=' || base-uri($doc)}" >
     {  root($doc)//ead/eadheader//titlestmt/normalize-space()  }
-   </a></span>
+   </a>
+   <div> 
+   {  concat(root($doc)//ead/eadheader/eadid/@mainagencycode/string(), ': ', root($doc)/ead/eadheader//publisher/string()) } 
+   </div>
+   <br/>
+   </div>
 
 };
 
