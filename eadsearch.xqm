@@ -37,8 +37,8 @@ function eadsearch:search( $title as xs:string? , $subject as xs:string?, $perso
 	<dd><input type="text" name="person" label="person"   value="{$person ?: ''}" />
 	{ eadsearch:HTMLselect( 'pers_mode', ('all', 'any')) }</dd>
     <input type="submit" value="Search" />
-	<input type="hidden" name="count" value="{$count ?: 25}" />
-	<input type="hidden" name="start" value="{$start ?: 1}" />
+	(: <input type="hidden" name="count" value="{$count}" />
+	<input type="hidden" name="start" value="{$start}" /> :)
   </div>
 </form>
 </div>
@@ -54,7 +54,7 @@ function eadsearch:search( $title as xs:string? , $subject as xs:string?, $perso
    map{ 'mode' : $title_mode ?: "all" } )
   =>  eadsearch:findBy( 'subject', $subject, map{ 'mode' : $subj_mode ?: "all" } )
   =>  eadsearch:findBy( 'persname', $person, map{ 'mode' : $pers_mode ?: "all" } )
-  => subsequence( if ($start) then $start else 1, if ($count) then $count else 50 )
+  => subsequence( $start, $count )
 
     return <li> { eadsearch:linkto( $doc ) } </li> }
     
@@ -62,7 +62,7 @@ function eadsearch:search( $title as xs:string? , $subject as xs:string?, $perso
 </div>
 <div>
 { request:query() }
-<a href="search?{ substring-before(request:query(), '&amp;start=' ) }&amp;start={ (xs:int($start) ?: 1) + xs:int($count) }" >
+<a href="search?{ substring-before(request:query(), '&amp;start=' ) }&amp;start={ string($start + $count) }" >
 
 <input type="button"  value="Next" />
 </a>
