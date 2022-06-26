@@ -1,3 +1,4 @@
+
 (:
 	test of collecting publisher facets from @mainagencycode works acceptably 
     however, tests of using the same method for //subject or //persname was unacceptable slow. 
@@ -27,4 +28,4 @@ return array{ count($ead), $ORG, $inst/@orgcode/string(),  $inst/string() } )
  order by $x(1) descending return $x
 };
 
-local:countpubfacets( collection('published'))
+local:countpubfacets( . )
