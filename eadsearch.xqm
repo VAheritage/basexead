@@ -37,23 +37,23 @@ function eadsearch:search( $title as xs:string? , $subject as xs:string?, $perso
 	<dd><input type="text" name="person" label="person"   value="{$person ?: ''}" />
 	{ eadsearch:HTMLselect( 'pers_mode', ('all', 'any')) }</dd>
     <input type="submit" value="Search" />
+	<input type="reset" value="Clear Search" onclick="location.href='search'"/>
 	<input type="hidden" name="count" value="25" />
 	<input type="hidden" name="start" value="1" /> 
   </div>
 </form>
 </div>
 <div id="search_results">
- <h4>
- { if ($title) then concat( 'TITLE:', $title), '; ' }
- { if ($subject) then concat('SUBJECT:', $subject), ';' }
- { if ($person) then concat('PERSON:', $person), ';' }
- </h4>
 
  { let $docs := eadsearch:findBy( collection('published'), 'titlestmt', $title,
    map{ 'mode' : $title_mode ?: "all" } )
   =>  eadsearch:findBy( 'subject', $subject, map{ 'mode' : $subj_mode ?: "all" } )
   =>  eadsearch:findBy( 'persname', $person, map{ 'mode' : $pers_mode ?: "all" } ) 
-  return  <div><h4> { count($docs) } found. </h4> <ul>
+  return  <div><h4> {$start} to {$start+$count} of { count($docs) } found:
+  { for $p in request:parameter-names()
+    where ( not(ends-with($p, "_mode")) and not($p = ("start", "count")) and request:parameter($p)  ) 
+    return concat($p,'=',request:parameter($p)) }
+   </h4> <ul>
   {
 	  for $doc in subsequence( $docs, $start, $count )
 	    return <li> { eadsearch:linkto( $doc ) } </li> 	   
@@ -68,7 +68,6 @@ function eadsearch:search( $title as xs:string? , $subject as xs:string?, $perso
 
 <input type="button"  value="Next" />
 </a>
-&#160;&#160; { request:query() } 
 <br/><hr/><br/>
 </div>
 </body>     
