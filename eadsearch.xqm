@@ -1,5 +1,7 @@
 module namespace eadsearch = 'http://localhost/eadsearch';
 
+import module namespace pf='http://localhost/pubfacets' at "pubfacets.xqm" ;
+
 declare default element namespace "urn:isbn:1-931666-22-9" ; (: EAD2002 :)
 
 (: TODO: add search by persname, unittitles, IDs ( top unitid and /titlestmt//num, vi# ),  
@@ -18,7 +20,7 @@ declare %rest:path( '/search' )
 		%rest:query-param( "start", "{$start}", 1)
 		%rest:query-param( "count", "{$count}", 25 )
         %output:method('html')       
-function eadsearch:search( $title as xs:string? , $subject as xs:string?, $person as xs:string?, 
+function eadsearch:search( $title as xs:string* , $subject as xs:string*, $person as xs:string*, 
  $subj_mode as xs:string?, $title_mode as xs:string?, $pers_mode as xs:string?, 
  $start as xs:int?, $count as xs:int? ) {
 <html xmlns='http://www.w3.org/1999/xhtml'>
@@ -29,13 +31,13 @@ function eadsearch:search( $title as xs:string? , $subject as xs:string?, $perso
   <div>
     <dt>Title:</dt>
     <dd><input type="text" name="title" label="title" value="{$title ?: '' }" />
-    { eadsearch:HTMLselect( 'title_mode', ('all', 'any')) }</dd>
+    { eadsearch:HTMLselect( 'title_mode', ('all', 'any'), $title_mode ) }</dd>
     <dt>Subject:</dt>
     <dd><input type="text" name="subject" label="subject" value="{$subject ?: ''}"/>
-    { eadsearch:HTMLselect( 'subj_mode', ('all', 'any')) }</dd>
+    { eadsearch:HTMLselect( 'subj_mode', ('all', 'any'), $subj_mode ) }</dd>
 	<dt>Persons:</dt>
 	<dd><input type="text" name="person" label="person"   value="{$person ?: ''}" />
-	{ eadsearch:HTMLselect( 'pers_mode', ('all', 'any')) }</dd>
+	{ eadsearch:HTMLselect( 'pers_mode', ('all', 'any'), $pers_mode ) }</dd>
     <input type="submit" value="Search" />
 	<input type="reset" value="Clear Search" onclick="location.href='search'"/>
 	<input type="hidden" name="count" value="25" />
@@ -97,8 +99,11 @@ declare function eadsearch:linkto( $doc  ) {
 
 };
 
-declare function eadsearch:HTMLselect( $name, $values ) { 
+declare function eadsearch:HTMLselect( $name, $values, $selected as xs:string? ) { 
   <select name="{$name}">
-     { for $v in $values return <option value="{$v}"  >{$v}</option> }
+     { for $v in $values return 
+		 if ($v = $selected ) then <option value="{$v}" selected="selected"  >{$v}</option>  
+		 else
+		 <option value="{$v}" >{$v}</option> }
   </select>
 };
