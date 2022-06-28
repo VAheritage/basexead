@@ -60,7 +60,13 @@ function eadsearch:search( $title as xs:string* , $subject as xs:string*, $perso
 	  for $doc in subsequence( $docs, $start, $count )
 	    return <li> { eadsearch:linkto( $doc ) } </li> 	   
   }
-  </ul></div>
+  </ul>
+  <div><h4>Publishers:</h4><ol>
+  { for $x in pf:countpubfacets( collection('published/oai')) 
+  	  where  ( array:size($x) = 4 )
+      return <li>{ array:flatten($x) }</li> }
+   </ol></div>
+  </div>
 }
 </div>
 <div>
