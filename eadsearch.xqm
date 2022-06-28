@@ -53,8 +53,8 @@ function eadsearch:search( $title as xs:string* , $subject as xs:string*, $perso
   =>  eadsearch:findBy( 'persname', $person, map{ 'mode' : $pers_mode ?: "all" } ) 
   return  <div><h4> {$start} to {$start+$count} of { count($docs) } found:
   { for $p in request:parameter-names()
-    where ( not(ends-with($p, "_mode")) and not($p = ("start", "count")) and request:parameter($p)  ) 
-    return concat($p,'=',request:parameter($p)) }
+    where ( not(ends-with($p, "_mode")) and not($p = ("start", "count")) and request:parameter($p)[1]  ) 
+    return concat($p,'=', string-join(request:parameter($p), ';' )) }
    </h4> <ul>
   {
 	  for $doc in subsequence( $docs, $start, $count )
@@ -77,9 +77,9 @@ function eadsearch:search( $title as xs:string* , $subject as xs:string*, $perso
 };
 
 
-declare function eadsearch:findBy( $ctx, $field as xs:string, $what as xs:string?, $opt ) {
-	if( $what ) then
-	$ctx/*[ft:contains( xquery:eval( ".//*:" || $field, map{ '' : . } ), ft:tokenize($what), $opt )]
+declare function eadsearch:findBy( $ctx, $field as xs:string, $what as xs:string*, $opt ) {
+	if( $what[1] ) then
+	$ctx/*[ft:contains( xquery:eval( ".//*:" || $field, map{ '' : . } ), ($what ! ft:tokenize(.)), $opt )]
 	else $ctx
 };
 
