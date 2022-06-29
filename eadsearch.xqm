@@ -98,7 +98,7 @@ function eadsearch:search( $title as xs:string* , $subject as xs:string*, $perso
 
 declare function eadsearch:findBy( $ctx, $field as xs:string, $what as xs:string*, $opt ) {
 	if( $what[1] ) then
-	$ctx/*[ft:contains( xquery:eval( ".//*:" || $field, map{ '' : . } ), ($what ! ft:tokenize(.)), $opt )]
+	$ctx/*[ft:contains( xquery:eval( ".//*:" || $field, map{ '' : . } ), ($what ! ft:tokenize(.)), $opt )] ! root(.)
 	else $ctx
 };
 
