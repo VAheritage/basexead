@@ -73,13 +73,15 @@ function eadsearch:search( $title as xs:string* , $subject as xs:string*, $perso
 			return <li> { eadsearch:linkto( $doc ) } </li>
 		}
 		</ul>
-		<div id="publishers" ><h4>Publishers: { count($docs) }</h4><ol>
+		<div id="publishers" ><h4>Publishers: { count($docs) }</h4><ul>
 		{ 
 			let $debug := prof:variables()
 			for $x in fn:trace( pf:countpubfacets( $docs ) )
 			where  ( array:size($x) = 4 )
-			return <li>{ array:flatten($x) }</li> }
-			</ol>
+			return <li>
+			<a href="search?{ request:query() }&amp;publisher={ $x(4) }">{ ( $x(3), $x(4)) }</a>
+			[{$x(1)}]</li> }
+			</ul>
 		</div> <!-- publishers -->
 
   	  </div>
