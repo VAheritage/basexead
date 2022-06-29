@@ -43,6 +43,8 @@ function eadsearch:search( $title as xs:string* , $subject as xs:string*, $perso
 			<dt>Persons:</dt>
 			<dd><input type="text" name="person" label="person"   value="{$person ?: ''}" />
 			{ eadsearch:HTMLselect( 'pers_mode', ('all', 'any'), $pers_mode ) }</dd>
+			<dt>Publisher:</dt>
+			<dd><input type="text" name="publisher" label="publisher"   value="{$publisher ?: ''}" /></dd>			
 			<input type="submit" value="Search" />
 			<input type="reset" value="Clear Search" onclick="location.href='search'"/>
 			<input type="hidden" name="count" value="25" />
