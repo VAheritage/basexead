@@ -17,7 +17,7 @@ declare function pf:normalize( $s ) {
 declare variable  $pf:orgs := doc('ead-inst/ead-inst.xml');
 declare variable $pf:orgcodes :=  collection('published')/ead/eadheader/eadid/@mainagencycode ! pf:normalize(.) => distinct-values() ;
 
-declare function pf:countpubfacets( $c ) {
+declare function pf:countpubfacets( $c ) as item()* {
 
 for $x in  (  
 for $ead in $c
