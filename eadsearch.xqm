@@ -44,7 +44,11 @@ function eadsearch:search( $title as xs:string* , $subject as xs:string*, $perso
 			<dd><input type="text" name="person" label="person"   value="{$person ?: ''}" />
 			{ eadsearch:HTMLselect( 'pers_mode', ('all', 'any'), $pers_mode ) }</dd>
 			<dt>Publisher:</dt>
-			<dd><input type="text" name="publisher" label="publisher"   value="{$publisher ?: ''}" /></dd>			
+			<dd><input type="text" name="publisher" label="publisher"   value="{$publisher ?: ''}" /></dd>
+
+			<dt>text (anywhere):</dt>
+			<dd><input type="text" name="text" label="text"   value="{$text ?: ''}" /></dd>
+
 			<input type="submit" value="Search" />
 			<input type="reset" value="Clear Search" onclick="location.href='search'"/>
 			<input type="hidden" name="count" value="25" />
@@ -59,6 +63,7 @@ function eadsearch:search( $title as xs:string* , $subject as xs:string*, $perso
   =>  eadsearch:findBy( 'subject', $subject, map{ 'mode' : $subj_mode ?: "all" } )
   =>  eadsearch:findBy( 'persname', $person, map{ 'mode' : $pers_mode ?: "all" } ) 
   =>  eadsearch:findBy(  'publisher', ( $publisher ?: '' ), map{ 'mode' : "phrase"} )
+  =>  eadsearch:findBy(  'archdesc', $text, map{ 'mode' : 'all' } )
   return
     
 	<div><h4> {$start} to {$start+$count} of  { count($docs) }  found:
