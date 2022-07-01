@@ -37,11 +37,11 @@ function eadsearch:search( $title as xs:string* , $subject as xs:string*, $perso
 	rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" 
 	crossorigin="anonymous" />
 </head>
-<body style="background-image:url(/static/images/web_background.jpg);" >
+<body style="background-image:url(static/images/web_background.jpg);" >
 
 
 <div class="container" >
-<img src="/static/images/ARVAS_fullnamelogo.png"  class="img-thumbnail" />
+<img src="static/images/ARVAS_fullnamelogo.png"  class="img-thumbnail" />
 <div id="search_form">
 	<form method="get" action="search">
 		<div>
