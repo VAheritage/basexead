@@ -22,6 +22,7 @@ declare %rest:path( '/search' )
 		%rest:query-param( "start", "{$start}", 1)
 		%rest:query-param( "count", "{$count}", 25 )
 		%output:method('html')
+		%output:version( '5.0')
 function eadsearch:search( $title as xs:string* , $subject as xs:string*, $person as xs:string*, 
 	$publisher as xs:string?, $text as xs:string*, 
 	$subj_mode as xs:string?, $title_mode as xs:string?, $pers_mode as xs:string?, 
