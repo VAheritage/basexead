@@ -85,7 +85,7 @@ function eadsearch:search( $title as xs:string* , $subject as xs:string*, $perso
 		<ul class="list-group">
 		{
 			let $debug := prof:variables()
-			for $doc in subsequence( $docs, $start, $count )
+			for $doc in subsequence( eadsearch:orderByNewest($docs), $start, $count )
 			return <li class="list-group-item"> { eadsearch:linkto( $doc ) } </li>
 		}
 		</ul>
@@ -146,4 +146,12 @@ declare function eadsearch:HTMLselect( $name, $values, $selected as xs:string? )
 		 else
 		 <option value="{$v}" >{$v}</option> }
   </select>
+};
+
+declare function eadsearch:orderByNewest( $c ) {
+	for $doc in $c
+	let $path := "/usr/local/projects/vh-migrate/published/" || db:path( $doc )
+	let $TS := file:last-modified( $path )
+	order by $TS descending 
+	return $doc
 };
