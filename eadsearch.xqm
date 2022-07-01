@@ -29,9 +29,19 @@ function eadsearch:search( $title as xs:string* , $subject as xs:string*, $perso
 	$start as xs:int?, $count as xs:int? ) {
 
 <html xmlns='http://www.w3.org/1999/xhtml'>
-<head></head>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Search</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" 
+	rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" 
+	crossorigin="anonymous" />
+</head>
 <body>
 
+
+<div class="container" >
+<img src="/static/images/ARVAS_fullnamelogo.png"  class="img-thumbnail" />
 <div id="search_form">
 	<form method="get" action="search">
 		<div>
@@ -72,19 +82,19 @@ function eadsearch:search( $title as xs:string* , $subject as xs:string*, $perso
 		where ( not(ends-with($p, "_mode")) and not($p = ("start", "count")) and request:parameter($p)[1]  ) 
 		return concat($p,'=', string-join(request:parameter($p), ';' )) }
 		</h4>
-		<ul>
+		<ul class="list-group">
 		{
 			let $debug := prof:variables()
 			for $doc in subsequence( $docs, $start, $count )
-			return <li> { eadsearch:linkto( $doc ) } </li>
+			return <li class="list-group-item"> { eadsearch:linkto( $doc ) } </li>
 		}
 		</ul>
-		<div id="publishers" ><h4>Publishers: { count($docs) }</h4><ul>
+		<div id="publishers" ><h4>Publishers: { count($docs) }</h4><ul class="list-group">
 		{ 
 			let $debug := prof:variables()
 			for $x in fn:trace( pf:countpubfacets( $docs ) )
 			where  ( array:size($x) = 4 )
-			return <li>
+			return <li class="list-group-item">
 			<a href="search?{ request:query() }&amp;publisher={ $x(4) }">{ ( $x(3), $x(4)) }</a>
 			[{$x(1)}]</li> }
 			</ul>
@@ -101,6 +111,7 @@ function eadsearch:search( $title as xs:string* , $subject as xs:string*, $perso
 	</a>
 	<br/><hr/><br/>
 </div> <!-- next -->
+</div > <!-- container --> 
 </body>
 </html>        
 };
