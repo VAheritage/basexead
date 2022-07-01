@@ -1,4 +1,4 @@
-module namespace eadsearch = 'http://localhost/eadsearch';
+module namespace es = 'http://localhost/eadsearch';
 
 import module namespace pf='http://localhost/pubfacets' at "pubfacets.xqm" ;
 
@@ -23,7 +23,7 @@ declare %rest:path( '/search' )
 		%rest:query-param( "count", "{$count}", 25 )
 		%output:method('html')
 		%output:version( '5.0')
-function eadsearch:search( $title as xs:string* , $subject as xs:string*, $person as xs:string*, 
+function es:search( $title as xs:string* , $subject as xs:string*, $person as xs:string*, 
 	$publisher as xs:string?, $text as xs:string*, 
 	$subj_mode as xs:string?, $title_mode as xs:string?, $pers_mode as xs:string?, 
 	$start as xs:int?, $count as xs:int? ) {
@@ -47,13 +47,13 @@ function eadsearch:search( $title as xs:string* , $subject as xs:string*, $perso
 		<div>
 			<dt>Title:</dt>
 			<dd><input type="text" name="title" label="title" value="{$title ?: '' }" />
-			{ eadsearch:HTMLselect( 'title_mode', ('all', 'any'), $title_mode ) }</dd>
+			{ es:HTMLselect( 'title_mode', ('all', 'any'), $title_mode ) }</dd>
 			<dt>Subject:</dt>
 			<dd><input type="text" name="subject" label="subject" value="{$subject ?: ''}"/>
-			{ eadsearch:HTMLselect( 'subj_mode', ('all', 'any'), $subj_mode ) }</dd>
+			{ es:HTMLselect( 'subj_mode', ('all', 'any'), $subj_mode ) }</dd>
 			<dt>Persons:</dt>
 			<dd><input type="text" name="person" label="person"   value="{$person ?: ''}" />
-			{ eadsearch:HTMLselect( 'pers_mode', ('all', 'any'), $pers_mode ) }</dd>
+			{ es:HTMLselect( 'pers_mode', ('all', 'any'), $pers_mode ) }</dd>
 			<dt>Publisher:</dt>
 			<dd><input type="text" name="publisher" label="publisher"   value="{$publisher ?: ''}" /></dd>
 
@@ -70,11 +70,11 @@ function eadsearch:search( $title as xs:string* , $subject as xs:string*, $perso
 
 <div id="search_results">
 
-{ let $docs := eadsearch:findBy( collection('published'), 'titlestmt', $title, map{ 'mode' : $title_mode ?: "all" } )
-  =>  eadsearch:findBy( 'subject', $subject, map{ 'mode' : $subj_mode ?: "all" } )
-  =>  eadsearch:findBy( 'persname', $person, map{ 'mode' : $pers_mode ?: "all" } ) 
-  =>  eadsearch:findBy(  'publisher', ( $publisher ?: '' ), map{ 'mode' : "phrase"} )
-  =>  eadsearch:findBy(  'archdesc', $text, map{ 'mode' : 'all' } )
+{ let $docs := es:findBy( collection('published'), 'titlestmt', $title, map{ 'mode' : $title_mode ?: "all" } )
+  =>  es:findBy( 'subject', $subject, map{ 'mode' : $subj_mode ?: "all" } )
+  =>  es:findBy( 'persname', $person, map{ 'mode' : $pers_mode ?: "all" } ) 
+  =>  es:findBy(  'publisher', ( $publisher ?: '' ), map{ 'mode' : "phrase"} )
+  =>  es:findBy(  'archdesc', $text, map{ 'mode' : 'all' } )
   return
     
 	<div><h4> {$start} to {$start+$count} of  { count($docs) }  found:
@@ -85,8 +85,8 @@ function eadsearch:search( $title as xs:string* , $subject as xs:string*, $perso
 		<ul class="list-group">
 		{
 			let $debug := prof:variables()
-			for $doc in subsequence( eadsearch:orderByNewest($docs), $start, $count )
-			return <li class="list-group-item"> { eadsearch:linkto( $doc ) } </li>
+			for $doc in subsequence( es:orderByNewest($docs), $start, $count )
+			return <li class="list-group-item"> { es:linkto( $doc ) } </li>
 		}
 		</ul>
 		<div id="publishers" ><h4>Publishers: { count($docs) }</h4><ul class="list-group">
@@ -117,7 +117,7 @@ function eadsearch:search( $title as xs:string* , $subject as xs:string*, $perso
 };
 
 
-declare function eadsearch:findBy( $ctx, $field as xs:string, $what as xs:string*, $opt ) {
+declare function es:findBy( $ctx, $field as xs:string, $what as xs:string*, $opt ) {
 	if( $what[1] ) then
 	$ctx/*[ft:contains( xquery:eval( ".//*:" || $field, map{ '' : . } ), ($what ! ft:tokenize(.)), $opt )] ! root(.)
 	else $ctx
@@ -125,7 +125,7 @@ declare function eadsearch:findBy( $ctx, $field as xs:string, $what as xs:string
 
 
 
-declare function eadsearch:linkto( $doc  ) { 
+declare function es:linkto( $doc  ) { 
 
 	<div>
    <a href="{ 'view?docId=' || base-uri($doc)}" >
@@ -139,7 +139,7 @@ declare function eadsearch:linkto( $doc  ) {
 
 };
 
-declare function eadsearch:HTMLselect( $name, $values, $selected as xs:string? ) { 
+declare function es:HTMLselect( $name, $values, $selected as xs:string? ) { 
   <select name="{$name}">
      { for $v in $values return 
 		 if ($v = $selected ) then <option value="{$v}" selected="selected"  >{$v}</option>  
@@ -148,7 +148,7 @@ declare function eadsearch:HTMLselect( $name, $values, $selected as xs:string? )
   </select>
 };
 
-declare function eadsearch:orderByNewest( $c ) {
+declare function es:orderByNewest( $c ) {
 	for $doc in $c
 	let $path := "/usr/local/projects/vh-migrate/published/" || db:path( $doc )
 	let $TS := file:last-modified( $path )
