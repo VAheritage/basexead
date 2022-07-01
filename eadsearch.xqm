@@ -8,6 +8,9 @@ declare default element namespace "urn:isbn:1-931666-22-9" ; (: EAD2002 :)
 	any text &	publisher select & facets, ( other facets if possible? )
 :)
 
+(: for order by newest, since there is no timestamps in DB, we need to map db:paths to file system paths
+   so this link has to match :)
+declare variable $es:file_base := '/usr/local/projects/published/' ;
 
 declare %rest:path( '/search' )
 		%rest:GET %rest:POST
@@ -150,7 +153,7 @@ declare function es:HTMLselect( $name, $values, $selected as xs:string? ) {
 
 declare function es:orderByNewest( $c ) {
 	for $doc in $c
-	let $path := "/usr/local/projects/vh-migrate/published/" || db:path( $doc )
+	let $path := $es:file_base || db:path( $doc )
 	let $TS := file:last-modified( $path )
 	order by $TS descending 
 	return $doc
