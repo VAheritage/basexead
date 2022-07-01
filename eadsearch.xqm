@@ -37,7 +37,7 @@ function eadsearch:search( $title as xs:string* , $subject as xs:string*, $perso
 	rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" 
 	crossorigin="anonymous" />
 </head>
-<body>
+<body style="background-image:url(/static/images/web_background.jpg);" >
 
 
 <div class="container" >
