@@ -31,7 +31,7 @@ function es:search( $title as xs:string* , $subject as xs:string*, $person as xs
 	$subj_mode as xs:string?, $title_mode as xs:string?, $pers_mode as xs:string?, 
 	$start as xs:int?, $count as xs:int? ) {
 
-<html xmlns='http://www.w3.org/1999/xhtml'>
+<html>
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -44,7 +44,11 @@ function es:search( $title as xs:string* , $subject as xs:string*, $person as xs
 
 
 <div class="container" >
+
+<div class="row m-2" >
 <img src="static/images/ARVAS_fullnamelogo.png"  class="img-thumbnail" />
+</div>
+
 <div id="search_form">
 	<form method="get" action="search">
 		<div>
@@ -132,7 +136,7 @@ declare function es:linkto( $doc  ) {
 
 	<div>
    <a href="{ 'view?docId=' || base-uri($doc)}" >
-    {  root($doc)//ead/eadheader//titlestmt/normalize-space()  }
+    {  root($doc)//ead/eadheader//titlestmt/es:normalize-space(.)  }
    </a>
    <div> 
    {  concat(root($doc)//ead/eadheader/eadid/@mainagencycode/string(), ': ', root($doc)/ead/eadheader//publisher/string()) } 
@@ -157,4 +161,8 @@ declare function es:orderByNewest( $c ) {
 	let $TS := file:last-modified( $path )
 	order by $TS descending 
 	return $doc
+};
+
+declare function es:normalize-space( $items as item()* ) {
+	  normalize-space(string-join( $items//descendant-or-self::text(), ' ' ))
 };
