@@ -21,11 +21,15 @@ However, if new xmlresolver jars are included in CLASSPATH, Saxon 11.3 appears t
 
 #### issues: 
 
-- SearchBy publisher does not included the normalization of various publisher sources done currently in XTF, and does not match by @mainagencycode: it sometimes fails. Need to rewrite using @mainagencycode.
+- SearchBy publisher does not included the normalization of various publisher sources done currently in XTF, and does not match by @mainagencycode: it sometimes fails as there are multiple publisher fields that don't always agree. Need to rewrite using @mainagencycode or some combination of multiple searches. 
+
+- Gathering and sorting publisher facets real-time works, but there are less than 50 publishers. Trying to build subject or persons facets where there are tens of thousands of distinct-values hasn't worked acceptable using the same method. It will likely require building an auxilary index when documents are added. Could be done in BaseX or maybe use SOLR. 
+
+- Subjects listed under document search results are truncated. Probably should provide some indication of that. 
 
 - BaseX Full Text search has a bunch of options and some performance issues with [mixed content](https://docs.basex.org/wiki/Full-Text#Mixed_Content) that I haven't sorted out yet. This hasn't been an issue with searches within title,subject, etc. It remains to be determined if I can get reasonable performance with desired options on searches of full text of document. ( actually, everything below /ead/archdesc/ - we can ignore eadheader and [deprecated] frontmatter )
 
-- default sort order is newest file first. Add sort order options later.
+- default sort order is newest file first. Add sort order options later. 
 
 
 
