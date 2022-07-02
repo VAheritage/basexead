@@ -93,7 +93,7 @@ function es:search( $title as xs:string* , $subject as xs:string*, $person as xs
 		{
 			let $debug := prof:variables()
 			for $doc in subsequence( es:orderByNewest($docs), $start, $count )
-			return <li class="list-group-item"> { es:linkto( $doc ) } </li>
+			return es:linkto( $doc ) 
 		}
 		</ul>
 		<div id="publishers" ><h4>Publishers: { count($docs) }</h4><ul class="list-group">
@@ -134,15 +134,18 @@ declare function es:findBy( $ctx, $field as xs:string, $what as xs:string*, $opt
 
 declare function es:linkto( $doc  ) { 
 
-	<div>
+	<li class="list-group-item"><div>
    <a href="{ 'view?docId=' || base-uri($doc)}" >
     {  root($doc)//ead/eadheader//titlestmt/es:normalize-space(.)  }
    </a>
-   <div> 
+   <div class="publisher"> 
    {  concat(root($doc)//ead/eadheader/eadid/@mainagencycode/string(), ': ', root($doc)/ead/eadheader//publisher/string()) } 
    </div>
-   <br/>
+   <div class="subjects" >
+   { for $s in $doc//subject/normalize-space() return <i>&#160;<a href="search?subject={$s}" >{$s}</a>&#160;</i> }
    </div>
+   <br/>
+   </div></li>
 
 };
 
