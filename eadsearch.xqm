@@ -142,7 +142,7 @@ declare function es:linkto( $doc  ) {
    {  concat(root($doc)//ead/eadheader/eadid/@mainagencycode/string(), ': ', root($doc)/ead/eadheader//publisher/string()) } 
    </div>
    <div class="subjects" >
-   { for $s in $doc//subject/normalize-space() return <i>&#160;<a href="search?subject={$s}" >{$s}</a>&#160;</i> }
+   { for $s in subsequence($doc//subject/normalize-space(),1,20) return <i>&#160;<a href="search?subject={$s}" >{$s}</a>&#160;</i> }
    </div>
    <br/>
    </div></li>
