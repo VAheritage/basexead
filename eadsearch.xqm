@@ -49,7 +49,7 @@ function es:search( $title as xs:string* , $subject as xs:string*, $person as xs
 <img src="static/images/ARVAS_fullnamelogo.png"  class="img-thumbnail" />
 </div>
 
-<div id="search_form">
+<div class="container m-4" id="search_form">
 	<form method="get" action="search">
 		<div>
 			<dt>Title:</dt>
@@ -75,7 +75,7 @@ function es:search( $title as xs:string* , $subject as xs:string*, $person as xs
 	</form>
 </div><!-- search-form -->
 
-<div id="search_results">
+<div class="container" id="search_results">
 
 { let $docs := es:findBy( collection('published'), 'titlestmt', $title, map{ 'mode' : $title_mode ?: "all" } )
   =>  es:findBy( 'subject', $subject, map{ 'mode' : $subj_mode ?: "all" } )
