@@ -113,7 +113,10 @@ function es:search( $title as xs:string* , $subject as xs:string*, $person as xs
 <div id="next">
 	<hr/><br/>
 	<a href="search?{ substring-before(request:query(), '&amp;start=' ) }&amp;start={ string($start + $count) }" >
-	<input type="button"  value="Next" />
+	<input type="button"  value="Next Page..." />
+	</a>
+	<a href="https://github.com/VAheritage/basexead#readme"  target="_blank" style="float:right;">
+	<input type="button" value="ReadMe: notes &amp; issues" />
 	</a>
 	<br/><hr/><br/>
 </div> <!-- next -->
