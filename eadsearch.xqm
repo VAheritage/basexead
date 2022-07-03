@@ -84,7 +84,7 @@ function es:search( $title as xs:string* , $subject as xs:string*, $person as xs
   =>  es:findBy(  'archdesc', $text, map{ 'mode' : 'all' } )
   return
     
-	<div><h4> {$start} to {$start+$count} of  { count($docs) }  found:
+	<div><h4> {$start} to {$start+$count - 1} of  { count($docs) }  found:
 		{ for $p in request:parameter-names()
 		where ( not(ends-with($p, "_mode")) and not($p = ("start", "count")) and request:parameter($p)[1]  ) 
 		return concat($p,'=', string-join(request:parameter($p), ';' )) }
