@@ -1,4 +1,6 @@
-module namespace xtfview = 'http://localhost/xtfview';
+module namespace view = 'http://localhost/view';
+
+import module namespace ead3 = 'http://localhost/ead3' at "EAD3.xqm" ;
 
 (: NOTE: Only stylesheet locations for EAD2002 have been updated in this module
    Others would need to be updated to display other document types. 
@@ -10,26 +12,21 @@ declare
   %rest:query-param( "docId", "{$query}", "")
 
   %rest:GET
-function xtfview:view( $query as xs:string) {
+function view:view( $query as xs:string) {
    let $params := map:merge( for $p in tokenize( concat( 'docId=', $query), ';' ) return apply( map:entry#2, array{ tokenize($p, '=') }) )
-   return switch( xtfview:doctype( $params('docId') ))
-    case 'TEIP4'
-   return xslt:transform( xslt:transform( doc($params('docId')), "/projects/SIB/add_id_bov.xsl" ),
-                  "/usr/local/projects/XTF/xtf.lib/style/dynaXML/docFormatter/tei/teiDocFormatter.xsl" ,
-                  $params )
-    case 'TEIP5'
-      return xslt:transform( doc($params('docId')), '/projects/TEI/tei2html/tei2html.xsl'  )
-      (: return xslt:transform( doc($params('docId')),  "/projects/TEI/tei2html/tei2html.xsl" ) :)
-    case 'EAD2002'
+   return switch( view:doctype( $params('docId') ))
+       case 'EAD2002'
       return xslt:transform( util:strip-namespaces(doc($params('docId'))),
                 "https://ead.lib.virginia.edu/vivaxtf/style/dynaXML/docFormatter/VIVAead/eadDocFormatter.xsl" ,
-                $params )
+               $params )
+		case 'EAD3' 
+		return ead3:EAD3toHTML( $params('docId') )
     default return doc($params('docId'))
 };
 
 (:~ dispatch on doctype: first try namespace and then root element :)
 declare
-function xtfview:doctype( $path as xs:string ) {
+function view:doctype( $path as xs:string ) {
    let $doc := doc($path)
    let $node := $doc/*
    let $ns := namespace-uri($node)

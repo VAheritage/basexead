@@ -15,6 +15,17 @@ declare function ead3:EAD2002toHTML( $doc as node() ) as node() {
 
 
 declare
+	%rest:path( '/ead3')
+	%rest:query-param( "docId", "{$query}", "")
+	%rest:GET
+function ead3:convert( $query as xs:string ) { 
+    let $params := map:merge( for $p in tokenize( concat( 'docId=', $query), ';' ) 
+		return apply( map:entry#2, array{ tokenize($p, '=') }) )
+		return ead3:EAD2002toEAD3( doc( $params( 'docId' ) ))
+	
+};
+
+declare
   %rest:path( '/ead3view')
   %rest:query-param( "docId", "{$query}", "")
   %rest:GET

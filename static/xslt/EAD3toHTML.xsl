@@ -152,7 +152,16 @@ Section 13: Generic and named templates
 				<!--Insert the proper path to your image in place of yourlogo.gif. 
 						If you do not want to include an image, delete the center element and its contents.-->
 				<center>
-					<img src="cchslogo.gif"/>
+					<xsl:element name="img">
+						<xsl:attribute name="src">
+							
+								<xsl:if test=".//*[@id='logostmt']/*/@href">
+									<xsl:value-of select=".//*[@id='logostmt']/*/@href"/>
+								</xsl:if>
+								
+											
+						</xsl:attribute>			
+					</xsl:element>
 				</center>
 				<xsl:apply-templates select="ead:control"/>
 				<hr/>
