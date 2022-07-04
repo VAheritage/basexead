@@ -24,12 +24,13 @@ declare %rest:path( '/search' )
 		%rest:query-param( "text", "{$text}")
 		%rest:query-param( "start", "{$start}", 1)
 		%rest:query-param( "count", "{$count}", 25 )
+		%rest:query-param( "ead3", "{$ead3}", "")
 		%output:method('html')
 		%output:version( '5.0')
 function es:search( $title as xs:string* , $subject as xs:string*, $person as xs:string*, 
 	$publisher as xs:string?, $text as xs:string*, 
 	$subj_mode as xs:string?, $title_mode as xs:string?, $pers_mode as xs:string?, 
-	$start as xs:int?, $count as xs:int? ) {
+	$start as xs:int?, $count as xs:int?, $ead3 as xs:string? ) {
 
 <html>
 <head>
@@ -92,7 +93,7 @@ function es:search( $title as xs:string* , $subject as xs:string*, $person as xs
 		<ul class="list-group">
 		{
 			for $doc in subsequence( es:orderByNewest($docs), $start, $count )
-			return es:linktodoc( $doc ) 
+			return es:linktodoc( $doc, (if ($ead3) then true() else false()) ) 
 		}
 		</ul>
 		<div id="publishers" ><h4>Publishers: { count($docs) }</h4><ul class="list-group">
@@ -134,10 +135,10 @@ declare function es:findBy( $ctx, $field as xs:string, $what as xs:string*, $opt
 
 
 
-declare function es:linktodoc( $doc  ) { 
+declare function es:linktodoc( $doc, $ead3 as xs:boolean ) { 
 
 	<li class="list-group-item"><div>
-   <a href="{ 'view?docId=' || base-uri($doc)}" >
+   <a href="{ 'view?docId=' || base-uri($doc) ||  (if ($ead3) then '&amp;ead3=true' else '&amp;ead3=' )  }" >
     {  root($doc)//ead/eadheader//titlestmt/es:normalize-space(.)  }
    </a>
    <div class="publisher"> 
