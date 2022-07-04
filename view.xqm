@@ -10,18 +10,25 @@ import module namespace ead3 = 'http://localhost/ead3' at "EAD3.xqm" ;
 declare
   %rest:path( '/view')
   %rest:query-param( "docId", "{$query}", "")
-
   %rest:GET
+  %output:method('html')
+  %output:version( '5.0')
 function view:view( $query as xs:string) {
-   let $params := map:merge( for $p in tokenize( concat( 'docId=', $query), ';' ) return apply( map:entry#2, array{ tokenize($p, '=') }) )
+   let $params := map:merge( for $p in tokenize( concat( 'docId=', $query), ';' ) 
+   		return apply( map:entry#2, array{ tokenize($p, '=') }) )
+	let  $doc := doc( $params('docId'))
    return switch( view:doctype( $params('docId') ))
        case 'EAD2002'
-      return xslt:transform( util:strip-namespaces(doc($params('docId'))),
+	   return 
+	   		if ( map:contains( $params, 'ead3' )) then 
+	   	 			ead3:EAD2002toHTML( $doc )
+	   			 else
+       xslt:transform( util:strip-namespaces( $doc ),
                 "https://ead.lib.virginia.edu/vivaxtf/style/dynaXML/docFormatter/VIVAead/eadDocFormatter.xsl" ,
                $params )
 		case 'EAD3' 
-		return ead3:EAD3toHTML( $params('docId') )
-    default return doc($params('docId'))
+		return ead3:EAD3toHTML( $doc )
+    default return $doc
 };
 
 (:~ dispatch on doctype: first try namespace and then root element :)
