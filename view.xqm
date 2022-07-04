@@ -22,9 +22,9 @@ function view:view( $query as xs:string, $ead3 as xs:string? ) {
        case 'EAD2002'
 	   return 
 	   		if ( $ead3 ) then 
-	   	 			ead3:EAD2002toHTML( $doc )
+	   	 			ead3:EAD2002toHTML( view:xinclude($doc) )
 	   			 else
-       xslt:transform( util:strip-namespaces( $doc ),
+       xslt:transform( util:strip-namespaces( view:xinclude($doc) ),
                 "https://ead.lib.virginia.edu/vivaxtf/style/dynaXML/docFormatter/VIVAead/eadDocFormatter.xsl" ,
                $params )
 		case 'EAD3' 
@@ -59,4 +59,10 @@ function view:doctype( $path as xs:string ) {
       case element(html) (: html :)
           return "html"
       default return  name($node)
+};
+
+
+
+declare function view:xinclude( $doc ) {
+	xslt:transform( $doc, 'static/xslt/xipr.xsl' )
 };
