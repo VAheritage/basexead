@@ -139,8 +139,9 @@ declare function es:linktodoc( $doc, $ead3 as xs:boolean ) {
 
 	<li class="list-group-item"><div>
    <a href="{ 'view?docId=' || base-uri($doc) ||  (if ($ead3) then '&amp;ead3=true' else '&amp;ead3=' )  }" >
-    {  root($doc)//ead/eadheader//titlestmt/es:normalize-space(.)  }
+    {  root($doc)/ead/eadheader//titlestmt/titleproper/es:normalize-space(.)  }
    </a>
+   <div>{  root($doc)/ead/archdesc/did/unittitle/es:normalize-space(.) }</div>
    <div class="publisher"> 
    {  concat(root($doc)//ead/eadheader/eadid/@mainagencycode/string(), ': ', root($doc)/ead/eadheader//publisher/string()) } 
    </div>
