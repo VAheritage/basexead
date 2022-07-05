@@ -32,6 +32,15 @@ However, if new xmlresolver jars are included in CLASSPATH, Saxon 11.3 appears t
 - default sort order is newest file first. Add sort order options later. 
 
 
+#### Other:
+
+- /rest/$DB/$PATH... e.g. /rest/published/org/finding-aid.xml 
+
+- append '?run=EAD3.xq' to the end of a REST URL resolving to a single document to convert to return document converted to EAD3 from EAD2002 
+
+- Append *"?ead3=true"* to /search or "&ead=true" to /view?docId=... URLs to convert EAD2002 to EAD3 and display using EAD3 to HTML stylesheet. ( EAD3 stylesheet is still a work-in-progress, starting from: (https://github.com/saa-ead-roundtable/ead3-stylesheets.git)
+
+
 
 
 
