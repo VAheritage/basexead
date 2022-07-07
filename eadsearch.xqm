@@ -166,7 +166,7 @@ declare function es:HTMLselect( $name, $values, $selected as xs:string? ) {
 declare function es:orderByNewest( $c ) {
 	for $doc in $c
 	let $path := $es:file_base || db:path( $doc )
-	let $TS := file:last-modified( $path )
+	let $TS := if (file:exists($path)) then file:last-modified( $path ) else '1970-01-01' 
 	order by $TS descending 
 	return $doc
 };
