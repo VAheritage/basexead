@@ -2323,9 +2323,9 @@ Section 13: Generic and named templates
 
 	<xsl:template match="ead:ref">
 		<xsl:if test="self::ead:ref[@href]">
-			<img src="#{@href}">
+			<a src="#{@href}">
 				<xsl:apply-templates/>
-			</img>
+			</a>
 		</xsl:if>
 		<xsl:if test="self::ead:ref[@show = 'new']">
 			<a href="{@href}">
