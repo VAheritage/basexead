@@ -10,7 +10,7 @@ declare function ead3:EAD3toHTML( $doc as node() ) as node() {
 
 
 declare function ead3:EAD2002toHTML( $doc as node() ) as node() {
-	ead3:EAD2002toEAD3( $doc ) => ead3:EAD3toHTML()
+	ead3:EAD2002toEAD3( $doc ) => xslt:transform( 'static/xslt/EAD3-cToc0n.xsl')=> ead3:EAD3toHTML()
 };
 
 

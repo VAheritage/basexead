@@ -24,7 +24,7 @@ function view:view( $query as xs:string, $ead3 as xs:string? ) {
 	   		if ( $ead3 ) then 
 	   	 			ead3:EAD2002toHTML( view:xinclude($doc) )
 	   			 else
-       xslt:transform( util:strip-namespaces( view:xinclude($doc) ),
+       xslt:transform( util:strip-namespaces( xslt:transform( view:xinclude($doc), 'static/xslt/EAD2002-cToCn.xsl'  ) ),
                 "https://ead.lib.virginia.edu/vivaxtf/style/dynaXML/docFormatter/VIVAead/eadDocFormatter.xsl" ,
                $params )
 		case 'EAD3' 

@@ -35,7 +35,7 @@ However, if new xmlresolver jars are included in CLASSPATH, Saxon 11.3 appears t
 
 - default sort order is newest file first. Add sort order options later. 
 
-- It looks like EAD3 stylesheet expects only numbered c sections and doesn't have a template for <c>
+- XTF textinderer does some other preprocessing besides stripping namespaces. One of those is converting unnumbered <c> elements to numbered elements. OAI feed from ArchivesSpace by default exports unnumbered <c> elements unless specially configured to export numbered <c0n> elements. ( Ours at UVA is configured this way. ) It appears that the EAD3toHTML stylesheet also requires numbered <c> elements. So initially, this view was only showing the first level series. I have added conversion stylesheets for both to the pipeline. However, I should look further at preprocessing stylesheets (which are used for textIndexer in XTF and are not used in this implementation ) to see if there are any other necessary transforms. 
 
 
 #### Other:
