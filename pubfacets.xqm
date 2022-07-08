@@ -11,8 +11,9 @@ module namespace pf = 'http://localhost/pubfacets' ;
 
 
 declare function pf:normalize( $s ) {
-  translate( replace( lower-case($s), '^(us-)+', '' ), '-', '' )
+  translate( replace( lower-case(string($s)), '^(us-)+', '' ), '-', '' )
 };
+
 
 declare variable  $pf:orgs := doc('ead-inst/ead-inst.xml');
 declare variable $pf:orgcodes :=  collection('published')/ead/eadheader/eadid/@mainagencycode ! pf:normalize(.) => distinct-values() ;

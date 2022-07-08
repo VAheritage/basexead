@@ -136,7 +136,7 @@ declare function es:findBy( $ctx, $field as xs:string, $what as xs:string*, $opt
 
 declare function es:findByAgencycode( $ctx, $code as xs:string? ) { 
 	if ( $code ) then
-	$ctx/ead[eadheader/eadid/@mainagencycode contains text { $code } ]
+	$ctx/ead[eadheader/eadid/@mainagencycode/pf:normalize(.) = pf:normalize($code)]
 	else $ctx
 };
 
