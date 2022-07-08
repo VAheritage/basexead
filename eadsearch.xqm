@@ -12,6 +12,8 @@ declare default element namespace "urn:isbn:1-931666-22-9" ; (: EAD2002 :)
    so this link has to match :)
 declare variable $es:file_base := '/usr/local/projects/published/' ;
 
+declare variable $es:ORGS := doc( 'ead-inst/ead-inst.xml' ); 
+
 declare %rest:path( '/search' )
 		%rest:GET %rest:POST
 		%rest:query-param( "title", "{$title}" )
@@ -136,7 +138,9 @@ declare function es:findBy( $ctx, $field as xs:string, $what as xs:string*, $opt
 
 declare function es:findByAgencycode( $ctx, $code as xs:string? ) { 
 	if ( $code ) then
-	$ctx/ead[eadheader/eadid/@mainagencycode/pf:normalize(.) = pf:normalize($code)]
+	let $norm := pf:normalize($code)
+	let $alt := $es:ORGS/inst[@prefix=$norm]
+	return $ctx/ead[eadheader/eadid/@mainagencycode/pf:normalize(.) = ( $norm, $alt )]
 	else $ctx
 };
 
