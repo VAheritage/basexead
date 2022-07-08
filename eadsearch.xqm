@@ -139,7 +139,8 @@ declare function es:findBy( $ctx, $field as xs:string, $what as xs:string*, $opt
 declare function es:findByAgencycode( $ctx, $code as xs:string? ) { 
 	if ( $code ) then
 	let $norm := pf:normalize($code)
-	let $alt := $es:ORGS/inst[@prefix=$norm]
+	let $alt := $es:ORGS/inst[@prefix=$norm]/@oclc/text()
+	let $name := $es:ORGS/inst[@prefix=$norm]/normalize-space()
 	return $ctx/ead[eadheader/eadid/@mainagencycode/pf:normalize(.) = ( $norm, $alt )]
 	else $ctx
 };
