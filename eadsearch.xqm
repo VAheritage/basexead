@@ -81,7 +81,8 @@ function es:search( $title as xs:string* , $subject as xs:string*, $person as xs
 { let $docs := es:findBy( collection('published'), 'titlestmt', $title, map{ 'mode' : $title_mode ?: "all" } )
   =>  es:findBy( 'subject', $subject, map{ 'mode' : $subj_mode ?: "all" } )
   =>  es:findBy( 'persname', $person, map{ 'mode' : $pers_mode ?: "all" } ) 
-  =>  es:findBy(  'publisher', ( $publisher ?: '' ), map{ 'mode' : "phrase"} )
+  (: =>  es:findBy(  'publisher', ( $publisher ?: '' ), map{ 'mode' : "phrase"} ) :)
+  => es:findByAgencycode( $publisher ) 
   =>  es:findBy(  'archdesc', $text, map{ 'mode' : 'all' } )
   return
     
@@ -102,7 +103,7 @@ function es:search( $title as xs:string* , $subject as xs:string*, $person as xs
 			for $x in fn:trace( pf:countpubfacets( $docs ) )
 			where  ( array:size($x) = 4 )
 			return <li class="list-group-item">
-			<a href="search?{ request:query() }&amp;publisher={ $x(4) }">{ ( $x(3), $x(4)) }</a>
+			<a href="search?{ request:query() }&amp;publisher={ $x(3) }">{ ( $x(3), $x(4)) }</a>
 			[{$x(1)}]</li> }
 			</ul>
 		</div> <!-- publishers -->
@@ -133,7 +134,11 @@ declare function es:findBy( $ctx, $field as xs:string, $what as xs:string*, $opt
 	else $ctx
 };
 
-
+declare function es:findByAgencycode( $ctx, $code as xs:string? ) { 
+	if ( $code ) then
+	$ctx/ead[eadheader/eadid/@mainagencycode contains text { $code } ]
+	else $ctx
+};
 
 declare function es:linktodoc( $doc, $ead3 as xs:boolean ) { 
 
