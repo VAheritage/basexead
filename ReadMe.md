@@ -25,7 +25,7 @@ However, if new xmlresolver jars are included in CLASSPATH, Saxon 11.3 appears t
 
 #### issues: 
 
-- SearchBy publisher does not included the normalization of various publisher sources done currently in XTF, and does not match by @mainagencycode: it sometimes fails as there are multiple publisher fields that don't always agree. Need to rewrite using @mainagencycode or some combination of multiple searches. 
+- SearchBy publisher does not included the normalization of various publisher sources done currently in XTF, ~~and does not match by @mainagencycode: it sometimes fails as there are multiple publisher fields that don't always agree.~~ Need to rewrite using @mainagencycode or some combination of multiple searches. Now using agencycode match. However GMU, ODU, Wm & Mary return different numbers in facet counts and publisher search and none are return for U of Richmond or Longwood U search when there are one finding aid each. 
 
 - Gathering and sorting publisher facets real-time works, but there are less than 50 publishers. Trying to build subject or persons facets where there are tens of thousands of distinct-values hasn't worked acceptable using the same method. It will likely require building an auxilary index when documents are added. Could be done in BaseX or maybe use SOLR. 
 
